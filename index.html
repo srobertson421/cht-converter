@@ -10,31 +10,47 @@
 </head>
 <body>
   <header>
-    <nav>
-      <h1><a href="/#">Home</a></h1>
+    <nav id="main-nav">
+      <h1><a class="nav-link" href="/#">Home</a></h1>
       <input type="checkbox" id="menu-toggle">
       <label for="menu-toggle">&#9776;</label>
-      <a href="/#converter">Converter</a>
-      <a href="/#db">CHT Files</a>
+      <a class="nav-link" href="/#converter">Converter</a>
+      <a class="nav-link" href="/#db">CHT Files</a>
     </nav>
   </header>
-  <main id="render"></main>
 
-  <template id="home-template">
+  <main id="home-template" class="page-view">
     <h1>AR to CHT</h1>
     <h2>Converter and DB of CHT files for EZ Flash</h2>
-  </template>
+  </main>
 
-  <template id="converter-template">
+  <main id="converter-template" class="page-view">
     <h1>Converter</h1>
-  </template>
+    <form id="new-game-form">
+      <fieldset>
+        <label for="game-title">Game Title</label>
+        <input type="text" id="game-title" name="game-title" placeholder="Enter game title" />
+        <button type="button" id="add-cheat-btn">Add New Cheat</button>
+      </fieldset>
+    </form>
+  </main>
   
-  <template id="db-template">
+  <main id="db-template" class="page-view">
     <h1>CHT File DB</h1>
-  </template>
+  </main>
 
-  <template id="404-template">
+  <main id="404-template" class="page-view">
     <h1>404 Not Found</h1>
+  </main>
+
+  <template id="new-cheat-template">
+    <hr />
+    <fieldset>
+      <label class="cheat-title-label" for="cheat-title">Cheat Title</label>
+      <input class="cheat-title-input" id="cheat-title" type="text" placeholder="Enter cheat name" />
+      <label class="cheat-code-label" for="cheat-code">Cheat Code</label>
+      <textarea class="cheat-code-input" id="cheat-code" placeholder="Enter cheat code"></textarea>
+    </fieldset>
   </template>
 
   <script src="app.js" type="module"></script>

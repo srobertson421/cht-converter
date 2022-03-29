@@ -1,0 +1,11 @@
+header {
+  padding: 0;
+}
+
+header nav {
+  background: hsla(0,0%,100%,1);
+}
+
+.page-view {
+  display: none;
+}
