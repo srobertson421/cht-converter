@@ -2,20 +2,46 @@
 
 const mainNavEl = document.getElementById('main-nav');
 const newCheatTemplate = document.getElementById('new-cheat-template');
-const pageViews = document.querySelectorAll('.page-view');
+const pageViews = Array.from(document.querySelectorAll('.page-view'));
 const addCheatBtn = document.getElementById('add-cheat-btn');
 
-const validViews = ['home', 'converter', 'db'];
-
 let cheatCount = 0;
+let currentGameList = [];
 
-function changeCurrentView(view) {
-  if(validViews.includes(view)) {
-    pageViews.forEach(node => node.style.display = 'none');
-    document.getElementById(`${view}-template`).style.display = 'block';
+if(location.hash === '') {
+  location.hash = '#/';
+}
+
+function fetchGameList(category) {
+  fetch(`/netlify/functions/games/${category}.json`)
+  .then(res => res.json())
+  .then(result => {
+    currentGameList = result;
+  })
+  .catch(console.log);
+}
+
+function setCurrentCheatList() {}
+
+function changeCurrentView() {
+  pageViews.forEach(node => node.style.display = 'none');
+
+  const view = pageViews.find(node => {
+    const idRoute = node.getAttribute('id');
+    const hasExact = node.getAttribute('exact') === 'true';
+
+    if(hasExact) {
+      return location.hash === idRoute;
+    } else {
+      const matchResult = location.hash.match(new RegExp(idRoute.replace(/:[^\s/]+/g, '([\\w-]+)')));
+      return matchResult;
+    }
+  });
+
+  if(view) {
+    view.style.display = 'block';
   } else {
-    pageViews.forEach(node => node.style.display = 'none');
-    document.getElementById(`404-template`).style.display = 'block';
+    document.getElementById('404-template').style.display = 'block';
   }
 }
 
@@ -34,7 +60,7 @@ function addNewCheatForm() {
 
 // routing
 window.addEventListener('hashchange', e => {
-  changeCurrentView(location.hash.slice(1) || 'home');
+  changeCurrentView();
 });
 
 addCheatBtn.addEventListener('click', () => {
@@ -49,4 +75,4 @@ mainNavEl.addEventListener('click', e => {
 });
 
 // Initial view render
-changeCurrentView(location.hash.slice(1) || 'home');
+changeCurrentView();
