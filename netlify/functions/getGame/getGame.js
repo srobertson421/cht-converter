@@ -4,7 +4,7 @@ const path = require('path');
 const handler = async (event) => {
   try {
     const fileData = await new Promise((resolve, reject) => {
-      fs.readFile(path.join(__dirname, '..', 'test.json'), 'utf8', (err, data) => {
+      fs.readFile(path.join(__dirname, 'test.json'), 'utf8', (err, data) => {
         if(err) {
           console.log(err);
           reject(err);
