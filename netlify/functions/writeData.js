@@ -4,7 +4,7 @@ const path = require('path');
 const handler = async (event) => {
   try {
     const fileData = await new Promise((resolve, reject) => {
-      fs.readFile(path.join(__dirname, 'test.json'), 'utf8', (err, data) => {
+      fs.readFile(path.join(__dirname, 'getGame/test.json'), 'utf8', (err, data) => {
         if(err) {
           console.log(err);
           reject(err);
@@ -18,7 +18,7 @@ const handler = async (event) => {
     parseData.count += 10;
 
     const writeResult = await new Promise((resolve, reject) => {
-      fs.writeFile(path.join(__dirname, 'test.json'), JSON.stringify(parseData), err => {
+      fs.writeFile(path.join(__dirname, 'getGame/test.json'), JSON.stringify(parseData), err => {
         if(err) {
           console.log(err);
           reject(err);
