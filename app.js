@@ -5,7 +5,7 @@ const newCheatTemplate = document.getElementById('new-cheat-template');
 const pageViews = Array.from(document.querySelectorAll('.page-view'));
 const addCheatBtn = document.getElementById('add-cheat-btn');
 const gameListViewEl = document.getElementById('#/cheats/:category');
-const gameViewEl = document.getElementById('#/game/:title');
+const gameViewEl = document.getElementById('#/game/:key/:title');
 
 let cheatCount = 0;
 let currentGameList = [];
@@ -17,38 +17,34 @@ if(location.hash === '') {
 
 const onMountActions = {
   '#/cheats/:category': function(data) {
-    fetchGameList(data, renderGameList);
+    fetchGameList(data[0], renderGameList);
   },
 
-  '#/game/:title': function(data) {
-    if(currentGameList.length < 1) {
-      fetchGameList(data[0].toLowerCase(), (listResult) => {
-        currentGame = listResult.find(game => {
-          return game.title === decodeURI(data);
-        });
-
-        renderGameView();
-      });
-    } else {
-      currentGame = currentGameList.find(game => {
-        return game.title === decodeURI(data);
-      });
-
-      renderGameView();
-    }
+  '#/game/:key/:title': function(data) {
+    fetchGame(data[0], data[1], renderGameView);
   }
 }
 
-function renderGameView() {
-  gameViewEl.querySelector('.game-title').innerText = currentGame.title;
+function renderGameView(game) {
+  gameViewEl.querySelector('.game-title').innerText = game.title;
 }
 
 function fetchGameList(category, cb) {
-  fetch(`/netlify/functions/games/${category}.json`)
+  fetch(`/.netlify/functions/readGames?category=${category}`)
   .then(res => res.json())
   .then(result => {
     currentGameList = result;
     cb(result, category);
+  })
+  .catch(console.log);
+}
+
+function fetchGame(gameId, gameTitle, cb) {
+  fetch(`/.netlify/functions/readGame?id=${gameId}`)
+  .then(res => res.json())
+  .then(result => {
+    currentGame = result;
+    cb(result);
   })
   .catch(console.log);
 }
@@ -88,7 +84,7 @@ function renderGameList(gameList, category) {
 </article>`);
 
   gameList.forEach(game => {
-    gameListViewEl.insertAdjacentHTML('beforeend', `<div><a href="/#/game/${encodeURI(game.title)}">${game.title}</a>`);
+    gameListViewEl.insertAdjacentHTML('beforeend', `<div><a href="/#/game/${game.key}/${encodeURI(game.title)}">${game.title}</a>`);
   });
 }
 
@@ -111,7 +107,7 @@ function changeCurrentView() {
     view.style.display = 'block';
     const idRoute = view.getAttribute('id');
     const splitInput = location.hash.match(new RegExp(idRoute.replace(/:[^\s/]+/g, '([\\w-]+)'))).input.split('/');
-    const paramData = splitInput[splitInput.length - 1];
+    const paramData = splitInput.slice(2);
     if(Object.hasOwn(onMountActions, idRoute)) {
       onMountActions[idRoute](paramData);
     }
